@@ -13,6 +13,8 @@ namespace RecetArreAPI2.Context
 
         public DbSet<Categoria> Categorias { get; set; }
         public DbSet<Ingrediente> Ingredientes { get; set; }
+        public DbSet<Receta> Recetas { get; set; }
+        public DbSet<Medalla> Medallas { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
@@ -70,6 +72,75 @@ namespace RecetArreAPI2.Context
                     .HasDefaultValueSql("CURRENT_TIMESTAMP");
 
                 entity.HasIndex(e => e.Nombre).IsUnique();
+            });
+
+            //configuración de Recetas
+            builder.Entity<Receta>(entity =>
+            {
+                entity.HasKey(e => e.Id);
+
+                entity.Property(e => e.Nombre)
+                .IsRequired()
+                .HasMaxLength(200);
+
+                entity.Property(e => e.Instrucciones)
+                .IsRequired()
+                .HasMaxLength(10000);
+
+                entity.Property(e => e.CreadoUtc)
+                .IsRequired()
+                .HasDefaultValueSql("CURRENT_TIMESTAMP");
+
+                //relaciones
+
+                //entity.HasOne(e => e.paraTiempo)
+                //.WithMany()
+                //.HasForeignKey(e => e.paraTiempoId)
+                //.OnDelete(DeleteBehavior.SetNull)
+                //.IsRequired();
+
+                entity.HasOne(e => e.creadoPorUsuario)
+                .WithMany()
+                .HasForeignKey(e => e.creadoPorUsuarioId)
+                .OnDelete(DeleteBehavior.SetNull)
+                .IsRequired();
+
+                //indices
+                //entity.HasIndex(e => e.creadoPorUsuarioId);
+                //entity.HasIndex(e => e.paraTiempoId);
+                //entity.HasIndex(e => e.Ingredientes);
+                ////entity.HasIndex(e => e.Categorias);
+            });
+
+            builder.Entity<Medalla>(entity =>
+            {
+                entity.HasKey(e => e.Id);
+
+                entity.Property(e => e.nombre)
+                .IsRequired()
+                .HasMaxLength(100);
+
+                entity.Property(e => e.descripcion)
+                .IsRequired()
+                .HasMaxLength(500);
+
+                entity.Property(e => e.icono)
+                .IsRequired()
+                .HasMaxLength(500);
+
+                entity.Property(e => e.tipoReq)
+                .IsRequired()
+                .HasMaxLength(200);
+
+                entity.Property(e => e.cantidadReq)
+                .IsRequired();
+
+                entity.Property(e => e.habilitada)
+                .IsRequired();
+
+                entity.Property(e => e.CreadoUtc)
+                .IsRequired(true)
+                .HasDefaultValueSql("CURRENT_TIMESTAMP");
             });
         }
     }

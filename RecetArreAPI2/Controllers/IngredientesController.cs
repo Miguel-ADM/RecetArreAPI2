@@ -51,7 +51,7 @@ namespace RecetArreAPI2.Controllers
         }
 
         [HttpPost]
-        //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public async Task<ActionResult<IngredienteDto>> CreateIngrediente(CrearIngredienteDto crearIngredienteDto)
         {
             var exist = await context.Ingredientes
@@ -64,11 +64,11 @@ namespace RecetArreAPI2.Controllers
             }
 
             //obtener al usuario autentificado
-            //var usuarioId = userManager.GetUserId(User);
-            //if (string.IsNullOrEmpty(usuarioId))
-            //{
-            //    return Unauthorized(new { menaje = "Usuario no autenticado" });
-            //}
+            var usuarioId = userManager.GetUserId(User);
+            if (string.IsNullOrEmpty(usuarioId))
+            {
+                return Unauthorized(new { menaje = "Usuario no autenticado" });
+            }
 
             var ingrediendte = mapper.Map<Ingrediente>(crearIngredienteDto);
             ingrediendte.CreadoUtc = DateTime.UtcNow;

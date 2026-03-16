@@ -2,7 +2,9 @@ using AutoMapper;
 using RecetArreAPI2.DTOs;
 using RecetArreAPI2.DTOs.Categorias;
 using RecetArreAPI2.DTOs.Ingredientes;
+using RecetArreAPI2.DTOs.Recetas;
 using RecetArreAPI2.Models;
+using RecetArreAPI2.DTOs.Medallas;
 
 namespace RecetArreAPI2.Mappings
 {
@@ -22,6 +24,19 @@ namespace RecetArreAPI2.Mappings
             CreateMap<Ingrediente, IngredienteDto>();
             CreateMap<CrearIngredienteDto, Ingrediente>();
             CreateMap<ModificarIngredienteDto, Ingrediente>();
+
+            //Receta mapping
+            CreateMap<Receta, RecetaDto>()
+                .ForMember(dest => dest.CategoriaIds, opt => opt.MapFrom(src => src.Categorias.Select(c => c.Id)))
+                .ForMember(dest => dest.IngredienteIds, opt => opt.MapFrom(src => src.Ingredientes.Select(i => i.Id)));
+            CreateMap<RecetaCreacionDto, Receta>();
+            CreateMap<RecetaModificacionDto, Receta>();
+
+            //Medalla mappings
+            CreateMap<Medalla, MedallaDto>();
+            CreateMap<MedallaCreacionDto, Medalla>();
+            CreateMap<MedallaModificacionDto, Medalla>();
+            CreateMap<Medalla, Medalla>();
         }
     }
 }
