@@ -10,6 +10,8 @@
         public int CantidadReq { get; set; } = default!;
         public Boolean Habilitada { get; set; } = default!;
         public DateTime CreadoUtc { get; set; }
+
+        public List<int> UsuarioIds { get; set; } = default!;
     }
 
     public class MedallaCreacionDto

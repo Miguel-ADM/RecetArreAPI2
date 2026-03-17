@@ -27,5 +27,8 @@ namespace RecetArreAPI2.Models
 
         public DateTime CreadoUtc { get; set; } = DateTime.UtcNow;
         public DateTime ModificadoUtc { get; set; } = DateTime.UtcNow;
+
+        //PRUEBA, relación muchos a muchos
+        public ICollection<Medalla> Medallas { get; set; } = new List<Medalla>();
     }
 }

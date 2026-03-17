@@ -91,25 +91,12 @@ namespace RecetArreAPI2.Context
                 .IsRequired()
                 .HasDefaultValueSql("CURRENT_TIMESTAMP");
 
-                //relaciones
-
-                //entity.HasOne(e => e.paraTiempo)
-                //.WithMany()
-                //.HasForeignKey(e => e.paraTiempoId)
-                //.OnDelete(DeleteBehavior.SetNull)
-                //.IsRequired();
-
                 entity.HasOne(e => e.creadoPorUsuario)
                 .WithMany()
                 .HasForeignKey(e => e.creadoPorUsuarioId)
                 .OnDelete(DeleteBehavior.SetNull)
-                .IsRequired();
+                .IsRequired(false);
 
-                //indices
-                //entity.HasIndex(e => e.creadoPorUsuarioId);
-                //entity.HasIndex(e => e.paraTiempoId);
-                //entity.HasIndex(e => e.Ingredientes);
-                ////entity.HasIndex(e => e.Categorias);
             });
 
             builder.Entity<Medalla>(entity =>

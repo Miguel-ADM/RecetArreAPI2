@@ -24,6 +24,6 @@ namespace RecetArreAPI2.Models
         public ApplicationUser? CreadoPorUsuario { get; set; }
 
         //PRUEBA, relación muchos a muchos
-        public ICollection<Receta> Recetass { get; set; } = new List<Receta>();
+        public ICollection<Receta> Recetas { get; set; } = new List<Receta>();
     }
 }

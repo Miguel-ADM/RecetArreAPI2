@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace RecetArreAPI2.Migrations
 {
     /// <inheritdoc />
-    public partial class Primera : Migration
+    public partial class Reparacion : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -59,19 +59,22 @@ namespace RecetArreAPI2.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Ingredientes",
+                name: "Medallas",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Nombre = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
-                    Unidad_medida = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false, defaultValue: "Gr"),
-                    Descripcion = table.Column<string>(type: "nvarchar(2000)", maxLength: 2000, nullable: false),
+                    nombre = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    descripcion = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: false),
+                    icono = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: false),
+                    tipoReq = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
+                    cantidadReq = table.Column<int>(type: "int", nullable: false),
+                    habilitada = table.Column<bool>(type: "bit", nullable: false),
                     CreadoUtc = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "CURRENT_TIMESTAMP")
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Ingredientes", x => x.Id);
+                    table.PrimaryKey("PK_Medallas", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -202,6 +205,103 @@ namespace RecetArreAPI2.Migrations
                         onDelete: ReferentialAction.SetNull);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "Recetas",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Nombre = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
+                    Instrucciones = table.Column<string>(type: "nvarchar(max)", maxLength: 10000, nullable: false),
+                    creadoPorUsuarioId = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                    CreadoUtc = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "CURRENT_TIMESTAMP")
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Recetas", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Recetas_AspNetUsers_creadoPorUsuarioId",
+                        column: x => x.creadoPorUsuarioId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.SetNull);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "ApplicationUserMedalla",
+                columns: table => new
+                {
+                    MedallasId = table.Column<int>(type: "int", nullable: false),
+                    UsuariosId = table.Column<string>(type: "nvarchar(450)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ApplicationUserMedalla", x => new { x.MedallasId, x.UsuariosId });
+                    table.ForeignKey(
+                        name: "FK_ApplicationUserMedalla_AspNetUsers_UsuariosId",
+                        column: x => x.UsuariosId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_ApplicationUserMedalla_Medallas_MedallasId",
+                        column: x => x.MedallasId,
+                        principalTable: "Medallas",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "CategoriaReceta",
+                columns: table => new
+                {
+                    CategoriasId = table.Column<int>(type: "int", nullable: false),
+                    RecetasId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_CategoriaReceta", x => new { x.CategoriasId, x.RecetasId });
+                    table.ForeignKey(
+                        name: "FK_CategoriaReceta_Categorias_CategoriasId",
+                        column: x => x.CategoriasId,
+                        principalTable: "Categorias",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_CategoriaReceta_Recetas_RecetasId",
+                        column: x => x.RecetasId,
+                        principalTable: "Recetas",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Ingredientes",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Nombre = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
+                    Unidad_medida = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false, defaultValue: "Gr"),
+                    Descripcion = table.Column<string>(type: "nvarchar(2000)", maxLength: 2000, nullable: false),
+                    CreadoUtc = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "CURRENT_TIMESTAMP"),
+                    RecetaId = table.Column<int>(type: "int", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Ingredientes", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Ingredientes_Recetas_RecetaId",
+                        column: x => x.RecetaId,
+                        principalTable: "Recetas",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ApplicationUserMedalla_UsuariosId",
+                table: "ApplicationUserMedalla",
+                column: "UsuariosId");
+
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
                 table: "AspNetRoleClaims",
@@ -242,6 +342,11 @@ namespace RecetArreAPI2.Migrations
                 filter: "[NormalizedUserName] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
+                name: "IX_CategoriaReceta_RecetasId",
+                table: "CategoriaReceta",
+                column: "RecetasId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Categorias_CreadoPorUsuarioId",
                 table: "Categorias",
                 column: "CreadoPorUsuarioId");
@@ -257,11 +362,24 @@ namespace RecetArreAPI2.Migrations
                 table: "Ingredientes",
                 column: "Nombre",
                 unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Ingredientes_RecetaId",
+                table: "Ingredientes",
+                column: "RecetaId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Recetas_creadoPorUsuarioId",
+                table: "Recetas",
+                column: "creadoPorUsuarioId");
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropTable(
+                name: "ApplicationUserMedalla");
+
             migrationBuilder.DropTable(
                 name: "AspNetRoleClaims");
 
@@ -278,13 +396,22 @@ namespace RecetArreAPI2.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
-                name: "Categorias");
+                name: "CategoriaReceta");
 
             migrationBuilder.DropTable(
                 name: "Ingredientes");
 
             migrationBuilder.DropTable(
+                name: "Medallas");
+
+            migrationBuilder.DropTable(
                 name: "AspNetRoles");
+
+            migrationBuilder.DropTable(
+                name: "Categorias");
+
+            migrationBuilder.DropTable(
+                name: "Recetas");
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");

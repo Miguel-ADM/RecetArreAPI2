@@ -33,7 +33,8 @@ namespace RecetArreAPI2.Mappings
             CreateMap<RecetaModificacionDto, Receta>();
 
             //Medalla mappings
-            CreateMap<Medalla, MedallaDto>();
+            CreateMap<Medalla, MedallaDto>()
+                .ForMember(dest => dest.UsuarioIds, opt => opt.MapFrom(src => src.Usuarios.Select(u => u.Id)));
             CreateMap<MedallaCreacionDto, Medalla>();
             CreateMap<MedallaModificacionDto, Medalla>();
             CreateMap<Medalla, Medalla>();
